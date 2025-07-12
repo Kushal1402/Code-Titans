@@ -8,7 +8,15 @@ A minimalist space for code-titans team to sync, plan, and ship.
 
 ---
 
-## 👥 User Roles
+## 📦 Tech Stack
+- Frontend : Next js | Typescript
+- UI library : Tailwind CSS | Zustand
+- Backend : Python
+- Database : PostgreSQL
+
+---
+
+## 👥 Website Roles
 
 | Role   | Permissions                                             |
 |--------|---------------------------------------------------------|
@@ -18,7 +26,7 @@ A minimalist space for code-titans team to sync, plan, and ship.
 
 ---
 
-## 🔑 Core Features (Must-Have)
+## 🔑 Core Features
 
 ### 1. **Ask a Question**
 Users can submit new questions with the following fields:
@@ -66,23 +74,46 @@ The question and answer descriptions support the following formatting options:
 
 ---
 
-## 📦 Tech Stack (Optional)
-_Add the technologies used like React, Node.js, MongoDB, etc. if applicable._
+## Folder Structure
+The project folder structure is organized as follows:
+
+- `frontend/`: Contains the frontend form application built with Next.js
+
+```bash
+git clone https://github.com/Kushal1402/Code-Titans.git
+```
+
+```bash
+cd Code-Titans
+```
 
 ---
 
-## 🚀 Getting Started (Optional)
-_Include setup instructions here if needed._
+## 🤝 Contributing
+
+Contributions, issues and feature requests are welcome!
+Feel free to check the [issues page](https://github.com/Kushal1402/Code-Titans/issues).
+
 
 ---
 
-## 📄 License
-MIT (or any license of your choice)
+## Contribution Guidlines
+1. Fork/clone the repository.
+2. Create a new branch: git checkout -b feature/my-feature.
+3. Commit your changes: git commit -m "Add my feature".
+4. Push to the branch: git push origin feature/my-feature.
+5. Submit a pull request.
 
 ---
 
-**Team details:**
-Kushal Doshi kushalhement2003@gmail.com
-Kunj Gadhesariya kunjgadhesariya@gmail.com
-Princi Shah pri18shah@gmail.com
-Dhrumi Sanghavi dhrumisanghavi2004@gmail.com
+## Author
+👤 Kunj Gadhesariya - kunjgadhesariya@gmail.com
+👤 Princi Shah - pri18shah@gmail.com
+👤 Dhrumi Sanghavi - dhrumisanghavi2004@gmail.com
+👤 Kushal Doshi - kushalhemant2003@gmail.com
+
+---
+
+## Show your support
+Give a ⭐️ if you like this p# Code-Titans
+A minimalist space for code-titans team to sync, plan, and ship.
