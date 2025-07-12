@@ -3,9 +3,17 @@
 import React from "react";
 import { useAppStore } from "@/store/useAppStore";
 import { HomeIcon, LogOutIcon, UserIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const Header: React.FC = () => {
   const { isAuthenticated, user, logout } = useAppStore();
+  const router = useRouter();
+
+  const hanldeLogout = () => {
+    logout();
+    document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    router.push('/');
+  }
 
   return (
     <header className="w-full bg-gray-900 text-white shadow-md py-4 px-8 flex items-center justify-between">
@@ -22,10 +30,10 @@ const Header: React.FC = () => {
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
                 <UserIcon className="h-6 w-6" />
-                <span>{user}</span>
+                <span>{user?.name || 'Guest'}</span>
               </div>
               <button 
-                onClick={logout}
+                onClick={hanldeLogout}
                 className="hover:text-red-400 transition cursor-pointer"
               >
                 <LogOutIcon className="h-6 w-6" />

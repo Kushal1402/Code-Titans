@@ -29,6 +29,8 @@ interface AnswersState {
   addAnswer: (questionId: string, content: string) => Promise<boolean>;
   // Vote on answer
   voteAnswer: (answerId: string, voteType: "up" | "down") => Promise<boolean>;
+  // Delete answer
+  deleteAnswer: (answerId: string) => Promise<boolean>;
 }
 
 export const useAnswersStore = create<AnswersState>((set, get) => ({
@@ -182,6 +184,26 @@ export const useAnswersStore = create<AnswersState>((set, get) => ({
     } catch (error) {
       console.error('Error voting on answer:', error);
       set({ error: error instanceof Error ? error.message : 'Failed to vote' });
+      return false;
+    }
+  },
+
+  // Delete answer
+  deleteAnswer: async (answerId: string) => {
+    try {
+      // Commented out API call
+      // await api.delete(`/api/answers/${answerId}`);
+
+      // Update local state
+      set((state) => ({
+        answers: state.answers.filter(answer => answer.id !== answerId),
+        totalAnswers: state.totalAnswers - 1
+      }));
+
+      return true;
+    } catch (error) {
+      console.error('Error deleting answer:', error);
+      set({ error: error instanceof Error ? error.message : 'Failed to delete answer' });
       return false;
     }
   },

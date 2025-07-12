@@ -1,16 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAppStore } from "../../store/useAppStore";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const login = useAppStore((state: any) => state.login);
-  const isAuthenticated = useAppStore((state: any) => state.isAuthenticated);
+  const {isAuthenticated} = useAppStore();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push("/");
+    }
+  }, [isAuthenticated, router]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,17 +28,12 @@ export default function LoginPage() {
     // Mock login - using hardcoded credentials for testing
     // In a real app, this would make an API call
     if (username === "admin" && password === "admin") {
-      login(username);
-      router.push("/");
+      document.cookie = 'token=admin; path=/;';
+      login({name:username,role:'admin',isAdmin:true});
     } else {
       setError("Invalid credentials. Try admin/admin");
     }
   };
-
-  if (isAuthenticated) {
-    router.push("/");
-    return null;
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-gray-50">

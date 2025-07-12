@@ -5,7 +5,7 @@ import Link from "next/link";
 import Pagination from "./pagination";
 import { useQuestionsStore } from "@/store/useQuestionsStore";
 import StatusWrapper from "./status-wrapper";
-import { ChevronUpIcon, ChevronDownIcon } from 'lucide-react';
+import { ChevronUpIcon, ChevronDownIcon, Trash2Icon } from 'lucide-react';
 import { useAppStore } from "@/store/useAppStore";
 
 interface Tag {
@@ -26,7 +26,7 @@ interface Question {
 }
 
 export default function QuestionsList() {
-  const { isAuthenticated } = useAppStore();
+  const { isAuthenticated, isAdmin } = useAppStore();
   const {
     currentPage,
     itemsPerPage,
@@ -34,6 +34,7 @@ export default function QuestionsList() {
     setItemsPerPage,
     fetchQuestions,
     voteQuestion,
+    deleteQuestion,
     isLoading,
     error,
     questions,
@@ -61,6 +62,19 @@ export default function QuestionsList() {
       return;
     }
     await voteQuestion(questionId, voteType);
+  };
+
+  const handleDelete = async (e: React.MouseEvent, questionId: string) => {
+    e.preventDefault(); // Prevent navigation to question detail
+    if (!isAdmin) return;
+    
+    if (window.confirm('Are you sure you want to delete this question?')) {
+      const success = await deleteQuestion(questionId);
+      if (success) {
+        // Question was deleted successfully
+        // The store already updates the list, so we don't need to do anything else
+      }
+    }
   };
 
   return (
@@ -111,8 +125,19 @@ export default function QuestionsList() {
                         {question.description}
                       </p>
                     </div>
-                    <div className="text-sm text-gray-500 whitespace-nowrap">
-                      {new Date(question.createdAt).toLocaleDateString()}
+                    <div className="flex items-center gap-4">
+                      <div className="text-sm text-gray-500 whitespace-nowrap">
+                        {new Date(question.createdAt).toLocaleDateString()}
+                      </div>
+                      {isAdmin && (
+                        <button
+                          onClick={(e) => handleDelete(e, question.id)}
+                          className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                          title="Delete question"
+                        >
+                          <Trash2Icon size={20} />
+                        </button>
+                      )}
                     </div>
                   </div>
 

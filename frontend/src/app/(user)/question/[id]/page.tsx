@@ -1,25 +1,27 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useQuestionsStore } from '@/store/useQuestionsStore';
 import { useAnswersStore } from '@/store/useAnswersStore';
 import { useAppStore } from '@/store/useAppStore';
 import Editor from '@/components/ui/editor';
 import Button from '@/components/ui/button';
 import StatusWrapper from '@/components/status-wrapper';
-import { ChevronUpIcon, ChevronDownIcon } from 'lucide-react';
+import { ChevronUpIcon, ChevronDownIcon, TrashIcon } from 'lucide-react';
 
 export default function QuestionPage() {
+  const router = useRouter();
   const params = useParams();
   const questionId = params.id as string;
-  const { isAuthenticated } = useAppStore();
-  const { fetchQuestion, voteQuestion } = useQuestionsStore();
+  const { isAuthenticated, isAdmin } = useAppStore();
+  const { fetchQuestion, voteQuestion, deleteQuestion } = useQuestionsStore();
   const { 
     answers, 
     fetchAnswers, 
     addAnswer, 
     voteAnswer,
+    deleteAnswer,
     isLoading: answersLoading,
     error: answersError 
   } = useAnswersStore();
@@ -27,6 +29,7 @@ export default function QuestionPage() {
   const [question, setQuestion] = useState<any>(null);
   const [answerContent, setAnswerContent] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -53,6 +56,28 @@ export default function QuestionPage() {
       return;
     }
     await voteAnswer(answerId, voteType);
+  };
+
+  const handleDeleteQuestion = async () => {
+    if (!isAdmin) return;
+    
+    if (window.confirm('Are you sure you want to delete this question? This action cannot be undone.')) {
+      setIsDeleting(true);
+      const success = await deleteQuestion(questionId);
+      setIsDeleting(false);
+      
+      if (success) {
+        router.push('/');
+      }
+    }
+  };
+
+  const handleDeleteAnswer = async (answerId: string) => {
+    if (!isAdmin) return;
+    
+    if (window.confirm('Are you sure you want to delete this answer? This action cannot be undone.')) {
+      await deleteAnswer(answerId);
+    }
   };
 
   const handleSubmitAnswer = async () => {
@@ -105,7 +130,19 @@ export default function QuestionPage() {
 
             {/* Question content */}
             <div className="flex-grow">
-              <h1 className="text-2xl font-bold mb-4">{question.title}</h1>
+              <div className="flex justify-between items-start mb-4">
+                <h1 className="text-2xl font-bold">{question.title}</h1>
+                {isAdmin && (
+                  <button
+                    onClick={handleDeleteQuestion}
+                    disabled={isDeleting}
+                    className="p-2 text-red-600 hover:bg-red-50 rounded-full"
+                    title="Delete question"
+                  >
+                    <TrashIcon size={20} />
+                  </button>
+                )}
+              </div>
               <div className="prose max-w-none mb-4" dangerouslySetInnerHTML={{ __html: question.description }} />
               
               <div className="flex flex-wrap gap-2 mb-4">
@@ -161,7 +198,18 @@ export default function QuestionPage() {
 
                   {/* Answer content */}
                   <div className="flex-grow">
-                    <div className="prose max-w-none mb-4" dangerouslySetInnerHTML={{ __html: answer.content }} />
+                    <div className="flex justify-between items-start">
+                      <div className="prose max-w-none mb-4" dangerouslySetInnerHTML={{ __html: answer.content }} />
+                      {isAdmin && (
+                        <button
+                          onClick={() => handleDeleteAnswer(answer.id)}
+                          className="p-2 text-red-600 hover:bg-red-50 rounded-full ml-4"
+                          title="Delete answer"
+                        >
+                          <TrashIcon size={20} />
+                        </button>
+                      )}
+                    </div>
                     
                     <div className="flex items-center text-sm text-gray-500">
                       <span>Answered by {answer.userName}</span>
@@ -206,7 +254,6 @@ export default function QuestionPage() {
         </div>
       </div>}
       </StatusWrapper>
-
     </div>
   );
 } 

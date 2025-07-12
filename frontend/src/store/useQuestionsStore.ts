@@ -52,6 +52,8 @@ interface QuestionsState {
   createQuestion: (title: string, content: string, tags: Tag[]) => Promise<boolean>;
   // Vote on question
   voteQuestion: (questionId: string, voteType: 'up' | 'down') => Promise<boolean>;
+  // Delete question
+  deleteQuestion: (questionId: string) => Promise<boolean>;
 }
 
 // Dummy data for development
@@ -260,6 +262,32 @@ export const useQuestionsStore = create<QuestionsState>((set, get) => ({
     } catch (error) {
       console.error('Error voting on question:', error);
       set({ error: error instanceof Error ? error.message : 'Failed to vote' });
+      return false;
+    }
+  },
+
+  // Delete question
+  deleteQuestion: async (questionId: string) => {
+    set({ isLoading: true, error: null });
+    
+    try {
+      // Commented out API call - uncomment and adjust when API is ready
+      // await api.delete(`${questions.QUESTION}/${questionId}`);
+      
+      // Update local state
+      set((state) => ({
+        questions: state.questions.filter(q => q.id !== questionId),
+        totalQuestions: state.totalQuestions - 1,
+        isLoading: false
+      }));
+      
+      return true;
+    } catch (error) {
+      console.error('Error deleting question:', error);
+      set({ 
+        error: error instanceof Error ? error.message : 'Failed to delete question',
+        isLoading: false 
+      });
       return false;
     }
   }

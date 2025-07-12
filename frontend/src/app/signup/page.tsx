@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 
 export default function SignupPage() {
   const login = useAppStore((state: any) => state.login);
-  const isAuthenticated = useAppStore((state: any) => state.isAuthenticated);
+  const {isAuthenticated} = useAppStore();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
