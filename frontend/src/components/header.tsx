@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useAppStore } from "@/store/useAppStore";
-import { HomeIcon, LogOutIcon, UserIcon } from "lucide-react";
+import { Globe, HomeIcon, LogOutIcon, UserIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const Header: React.FC = () => {
@@ -18,8 +18,8 @@ const Header: React.FC = () => {
   return (
     <header className="w-full bg-gray-900 text-white shadow-md py-4 px-8 flex items-center justify-between">
       <div className="flex items-center space-x-2">
-        <img src="/globe.svg" alt="Logo" className="h-8 w-8" />
-        <span className="font-bold text-xl">Code Titans</span>
+        <Globe/>
+        <span className="font-bold text-xl">StackIt</span>
       </div>
       <nav className="flex items-center space-x-6">
             <a href="/" className="hover:text-blue-400 transition flex items-center space-x-2">

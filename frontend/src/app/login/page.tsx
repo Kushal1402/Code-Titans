@@ -30,6 +30,9 @@ export default function LoginPage() {
     if (username === "admin" && password === "admin") {
       document.cookie = 'token=admin; path=/;';
       login({name:username,role:'admin',isAdmin:true});
+    }else if(username === "user" && password === "user") {
+      document.cookie = 'token=user; path=/;';
+      login({name:username,role:'user',isAdmin:false});
     } else {
       setError("Invalid credentials. Try admin/admin");
     }
