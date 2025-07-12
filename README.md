@@ -87,38 +87,38 @@ The project folder structure is organized as follows:
 ## 🚀 Frontend Setup
 
 1. Navigate to the frontend directory:
-bash
+```bash
 cd frontend
-
+```
 
 2. Install dependencies:
-bash
+```bash
 npm install
-
+```
 
 3. Copy the environment variables:
-bash
+```bash
 cp .env.example .env.local
-
+```
 
 4. Update the .env.local file with your configuration values.
 
 5. Start the development server:
-bash
+```bash
 npm run dev
-
+```
 
 The frontend application will be available at http://localhost:3000
 
 ---
 
-bash
+```bash
 git clone https://github.com/Kushal1402/Code-Titans.git
+```
 
-
-bash
+```bash
 cd Code-Titans
-
+```
 
 ---
 
@@ -148,5 +148,4 @@ Feel free to check the [issues page](https://github.com/Kushal1402/Code-Titans/i
 ---
 
 ## Show your support
-Give a ⭐ if you like this p# Code-Titans
-A minimalist space for code-titans team to sync, plan, and ship.
+Give a ⭐ if you like this project. Code-Titans ❤
