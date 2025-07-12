@@ -80,3 +80,9 @@ _Include setup instructions here if needed._
 MIT (or any license of your choice)
 
 ---
+
+**Team details:**
+Kushal Doshi kushalhement2003@gmail.com
+Kunj Gadhesariya kunjgadhesariya@gmail.com
+Princi Shah pri18shah@gmail.com
+Dhrumi Sanghavi dhrumisanghavi2004@gmail.com
