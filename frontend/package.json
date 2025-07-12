@@ -9,8 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@ckeditor/ckeditor5-build-classic": "^41.1.0",
-    "@ckeditor/ckeditor5-react": "^6.2.0",
+    "@ckeditor/ckeditor5-build-classic": "^41.4.2",
+    "@ckeditor/ckeditor5-react": "^11.0.0",
     "axios": "^1.10.0",
     "js-cookie": "^3.0.5",
     "lucide-react": "^0.525.0",
