@@ -1,11 +1,13 @@
 "use client";
 
 import React, { ChangeEvent, useState, useEffect, useRef } from 'react';
+import { useRouter } from 'next/navigation';
 import { SearchIcon, MenuIcon } from './Icons';
 import Button from './ui/button';
 import { useQuestionsStore } from '@/store/useQuestionsStore';
 
 export default function SearchFilter() {
+    const router = useRouter();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
     const { 
@@ -82,7 +84,7 @@ export default function SearchFilter() {
                     </button>
                 </div>
                 <Button
-                    onClick={() => {/* TODO: Implement new question navigation */}}
+                    onClick={() => router.push('/add-question')}
                 >
                     Add Question
                 </Button>
