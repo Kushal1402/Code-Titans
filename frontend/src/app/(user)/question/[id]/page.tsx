@@ -109,7 +109,7 @@ export default function QuestionPage() {
           <div>
             {/* Question Section */}
             <div className="bg-white rounded-xl shadow-md p-8 mb-12 transition-shadow hover:shadow-lg">
-              <div className="flex gap-8">
+              <div className="flex md:gap-8 gap-2">
                 {/* Vote buttons */}
                 <div className="flex flex-col items-center gap-2">
                   <button
@@ -146,7 +146,7 @@ export default function QuestionPage() {
                 {/* Question content */}
                 <div className="flex-grow">
                   <div className="flex justify-between items-start mb-6">
-                    <h1 className="text-3xl font-bold text-gray-900">{question.title}</h1>
+                    <h1 className="text-xl md:text-3xl font-bold text-gray-900">{question.title}</h1>
                     {isAdmin && (
                       <button
                         onClick={handleDeleteQuestion}
@@ -189,8 +189,8 @@ export default function QuestionPage() {
               <StatusWrapper loading={answersLoading} error={answersError}>
                 <div className="space-y-6">
                   {answers.map((answer) => (
-                    <div key={answer.id} className="bg-white rounded-xl shadow-md p-8 transition-shadow hover:shadow-lg">
-                      <div className="flex gap-8">
+                    <div key={answer.id} className="bg-white rounded-xl shadow-md md:p-8 p-3  transition-shadow hover:shadow-lg">
+                      <div className="flex md:gap-8 gap-2">
                         {/* Vote buttons */}
                         <div className="flex flex-col items-center gap-2">
                           <button
