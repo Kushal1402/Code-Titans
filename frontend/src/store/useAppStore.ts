@@ -12,7 +12,6 @@ interface AuthState {
 }
 
 export const useAppStore = create<AuthState>((set) => ({
-  // Auth state
   isAuthenticated: false,
   isAdmin: false,
   user: null,

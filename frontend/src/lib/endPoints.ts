@@ -3,7 +3,7 @@ export const auth={
     SIGNUP:'/api/auth/signup',
 }
 
-export const questions={
+export const questionEndpoint={
     PAGINATED:'/api/questions/list',
     QUESTION:'/api/questions',
     SINGLE: (id: string) => `/api/questions/${id}`,

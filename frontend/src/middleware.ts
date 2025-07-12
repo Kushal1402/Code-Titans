@@ -13,7 +13,7 @@ export function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-// Configure which routes to run middleware on
+
 export const config = {
   matcher: [
     '/add-question',

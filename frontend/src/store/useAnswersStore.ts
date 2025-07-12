@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { api } from "@/lib/api";
 
 interface Answer {
   id: string;
@@ -11,42 +10,33 @@ interface Answer {
 }
 
 interface AnswersState {
-  // Data
   answers: Answer[];
   totalAnswers: number;
   isLoading: boolean;
   error: string | null;
 
-  // Actions
   setAnswers: (answers: Answer[]) => void;
   setTotalAnswers: (total: number) => void;
   setLoading: (isLoading: boolean) => void;
   setError: (error: string | null) => void;
 
-  // Fetch answers for a question
   fetchAnswers: (questionId: string) => Promise<void>;
-  // Add answer
   addAnswer: (questionId: string, content: string) => Promise<boolean>;
-  // Vote on answer
   voteAnswer: (answerId: string, voteType: "up" | "down") => Promise<boolean>;
-  // Delete answer
   deleteAnswer: (answerId: string) => Promise<boolean>;
 }
 
 export const useAnswersStore = create<AnswersState>((set, get) => ({
-  // Initial state
   answers: [],
   totalAnswers: 0,
   isLoading: false,
   error: null,
 
-  // Actions
   setAnswers: (answers) => set({ answers }),
   setTotalAnswers: (total) => set({ totalAnswers: total }),
   setLoading: (isLoading) => set({ isLoading }),
   setError: (error) => set({ error }),
 
-  // Fetch answers for a question
   fetchAnswers: async (questionId: string) => {
     set({ isLoading: true, error: null });
 

@@ -6,7 +6,7 @@ import SearchFilter from "@/components/search-filter";
 export default function Home() {
  
   return (
-    <div className="space-y-4 h-full">
+    <div className="space-y-4 h-full container mx-auto px-4">
       <SearchFilter />
       <QuestionsList/>
     </div>

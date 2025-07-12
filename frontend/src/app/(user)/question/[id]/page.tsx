@@ -9,6 +9,8 @@ import Editor from '@/components/ui/editor';
 import Button from '@/components/ui/button';
 import StatusWrapper from '@/components/status-wrapper';
 import { ChevronUpIcon, ChevronDownIcon, TrashIcon } from 'lucide-react';
+import useSWR, { mutate } from 'swr';
+import { questionEndpoint } from '@/lib/endPoints';
 
 export default function QuestionPage() {
   const router = useRouter();
@@ -31,16 +33,13 @@ export default function QuestionPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  useEffect(() => {
-    const loadData = async () => {
-      const questionData = await fetchQuestion(questionId);
-      if (questionData) {
-        setQuestion(questionData);
-        await fetchAnswers(questionId);
-      }
-    };
-    loadData();
-  }, [questionId, fetchQuestion, fetchAnswers]);
+  const {error,isLoading} = useSWR(questionEndpoint.SINGLE(questionId),async ()=>{
+    const questionData = await fetchQuestion(questionId);
+    if (questionData) {
+      setQuestion(questionData);
+      await fetchAnswers(questionId);
+    }
+  });
 
   const handleVoteQuestion = async (voteType: 'up' | 'down') => {
     if (!isAuthenticated) {
@@ -67,6 +66,7 @@ export default function QuestionPage() {
       setIsDeleting(false);
       
       if (success) {
+        mutate((url:string)=> url && (url.includes(questionEndpoint.PAGINATED) || url.includes(questionEndpoint.SINGLE(questionId))));
         router.push('/');
       }
     }
@@ -77,6 +77,7 @@ export default function QuestionPage() {
     
     if (window.confirm('Are you sure you want to delete this answer? This action cannot be undone.')) {
       await deleteAnswer(answerId);
+      mutate((url:string)=> url && (url.includes(questionEndpoint.PAGINATED) || url.includes(questionEndpoint.SINGLE(questionId))));
     }
   };
 
@@ -97,162 +98,195 @@ export default function QuestionPage() {
 
     if (success) {
       setAnswerContent('');
+      mutate((url:string)=> url && (url.includes(questionEndpoint.PAGINATED) || url.includes(questionEndpoint.SINGLE(questionId))));
     }
   };
 
   return (
-    <div className="min-h-screen py-8 container mx-auto px-4">
-      <StatusWrapper loading={!question}>
-    {question &&   <div className="container mx-auto px-4">
-        {/* Question Section */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
-          <div className="flex gap-6">
-            {/* Vote buttons */}
-            <div className="flex flex-col items-center gap-2">
-              <button
-                onClick={() => handleVoteQuestion('up')}
-                className={`p-2 rounded hover:bg-gray-100 ${
-                  question.userVote === 'up' ? 'text-green-600' : 'text-gray-400'
-                }`}
-              >
-                <ChevronUpIcon size={24} />
-              </button>
-              <span className="text-lg font-semibold">{question.votes}</span>
-              <button
-                onClick={() => handleVoteQuestion('down')}
-                className={`p-2 rounded hover:bg-gray-100 ${
-                  question.userVote === 'down' ? 'text-red-600' : 'text-gray-400'
-                }`}
-              >
-                <ChevronDownIcon size={24} />
-              </button>
-            </div>
-
-            {/* Question content */}
-            <div className="flex-grow">
-              <div className="flex justify-between items-start mb-4">
-                <h1 className="text-2xl font-bold">{question.title}</h1>
-                {isAdmin && (
+    <div className="min-h-screen py-12 container mx-auto px-4 max-w-5xl">
+      <StatusWrapper loading={isLoading} error={error}>
+        {question && (
+          <div>
+            {/* Question Section */}
+            <div className="bg-white rounded-xl shadow-md p-8 mb-12 transition-shadow hover:shadow-lg">
+              <div className="flex gap-8">
+                {/* Vote buttons */}
+                <div className="flex flex-col items-center gap-2">
                   <button
-                    onClick={handleDeleteQuestion}
-                    disabled={isDeleting}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded-full"
-                    title="Delete question"
+                    onClick={() => handleVoteQuestion('up')}
+                    className={`p-2.5 rounded-lg transition-all duration-200 ${
+                      question.userVote === 'up'
+                        ? 'bg-green-100 text-green-600'
+                        : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'
+                    }`}
                   >
-                    <TrashIcon size={20} />
+                    <ChevronUpIcon size={28} />
                   </button>
-                )}
-              </div>
-              <div className="prose max-w-none mb-4" dangerouslySetInnerHTML={{ __html: question.description }} />
-              
-              <div className="flex flex-wrap gap-2 mb-4">
-                {question.tags.map((tag: any) => (
-                  <span
-                    key={tag.id}
-                    className="px-3 py-1 text-sm bg-blue-50 text-blue-600 rounded-full"
-                  >
-                    {tag.name}
+                  <span className={`text-xl font-semibold transition-colors duration-200 ${
+                    question.userVote === 'up' 
+                      ? 'text-green-600' 
+                      : question.userVote === 'down' 
+                        ? 'text-red-600' 
+                        : 'text-gray-700'
+                  }`}>
+                    {question.votes}
                   </span>
-                ))}
-              </div>
+                  <button
+                    onClick={() => handleVoteQuestion('down')}
+                    className={`p-2.5 rounded-lg transition-all duration-200 ${
+                      question.userVote === 'down'
+                        ? 'bg-red-100 text-red-600'
+                        : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'
+                    }`}
+                  >
+                    <ChevronDownIcon size={28} />
+                  </button>
+                </div>
 
-              <div className="flex items-center text-sm text-gray-500">
-                <span>Asked by {question.userName}</span>
-                <span className="mx-2">•</span>
-                <span>{new Date(question.createdAt).toLocaleDateString()}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Answers Section */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold mb-4">
-            {answers.length} {answers.length === 1 ? 'Answer' : 'Answers'}
-          </h2>
-
-          <StatusWrapper loading={answersLoading} error={answersError}>
-            {answers.map((answer) => (
-              <div key={answer.id} className="bg-white rounded-lg shadow-sm p-6 mb-4">
-                <div className="flex gap-6">
-                  {/* Vote buttons */}
-                  <div className="flex flex-col items-center gap-2">
-                    <button
-                      onClick={() => handleVoteAnswer(answer.id, 'up')}
-                      className={`p-2 rounded hover:bg-gray-100 ${
-                        answer.userVote === 'up' ? 'text-green-600' : 'text-gray-400'
-                      }`}
-                    >
-                      <ChevronUpIcon size={24} />
-                    </button>
-                    <span className="text-lg font-semibold">{answer.votes}</span>
-                    <button
-                      onClick={() => handleVoteAnswer(answer.id, 'down')}
-                      className={`p-2 rounded hover:bg-gray-100 ${
-                        answer.userVote === 'down' ? 'text-red-600' : 'text-gray-400'
-                      }`}
-                    >
-                      <ChevronDownIcon size={24} />
-                    </button>
+                {/* Question content */}
+                <div className="flex-grow">
+                  <div className="flex justify-between items-start mb-6">
+                    <h1 className="text-3xl font-bold text-gray-900">{question.title}</h1>
+                    {isAdmin && (
+                      <button
+                        onClick={handleDeleteQuestion}
+                        disabled={isDeleting}
+                        className="p-2.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200 group"
+                        title="Delete question"
+                      >
+                        <TrashIcon size={22} className="group-hover:scale-110 transition-transform duration-200" />
+                      </button>
+                    )}
+                  </div>
+                  <div className="prose prose-lg max-w-none mb-6" dangerouslySetInnerHTML={{ __html: question.description }} />
+                  
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {question.tags.map((tag: any) => (
+                      <span
+                        key={tag.id}
+                        className="px-4 py-1.5 text-sm font-medium bg-blue-50 text-blue-600 rounded-full transition-colors duration-200 hover:bg-blue-100"
+                      >
+                        {tag.name}
+                      </span>
+                    ))}
                   </div>
 
-                  {/* Answer content */}
-                  <div className="flex-grow">
-                    <div className="flex justify-between items-start">
-                      <div className="prose max-w-none mb-4" dangerouslySetInnerHTML={{ __html: answer.content }} />
-                      {isAdmin && (
-                        <button
-                          onClick={() => handleDeleteAnswer(answer.id)}
-                          className="p-2 text-red-600 hover:bg-red-50 rounded-full ml-4"
-                          title="Delete answer"
-                        >
-                          <TrashIcon size={20} />
-                        </button>
-                      )}
-                    </div>
-                    
-                    <div className="flex items-center text-sm text-gray-500">
-                      <span>Answered by {answer.userName}</span>
-                      <span className="mx-2">•</span>
-                      <span>{new Date(answer.createdAt).toLocaleDateString()}</span>
-                    </div>
+                  <div className="flex items-center text-sm text-gray-600 border-t pt-4">
+                    <span className="font-medium">Asked by {question.userName}</span>
+                    <span className="mx-2">•</span>
+                    <span>{new Date(question.createdAt).toLocaleDateString()}</span>
                   </div>
                 </div>
               </div>
-            ))}
-          </StatusWrapper>
-        </div>
-
-        {/* Add Answer Section */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-xl font-semibold mb-4">Your Answer</h2>
-          
-          {isAuthenticated ? (
-            <>
-              <Editor
-                value={answerContent}
-                onChange={setAnswerContent}
-                placeholder="Write your answer here..."
-                className="mb-4"
-              />
-              <Button
-                onClick={handleSubmitAnswer}
-                loading={isSubmitting}
-                disabled={isSubmitting || !answerContent.trim()}
-              >
-                Post Your Answer
-              </Button>
-            </>
-          ) : (
-            <div className="text-center py-8">
-              <p className="text-gray-600 mb-4">You need to be logged in to submit an answer.</p>
-              <Button onClick={() => window.location.href = '/login'}>
-                Log in to Answer
-              </Button>
             </div>
-          )}
-        </div>
-      </div>}
+
+            {/* Answers Section */}
+            <div className="mb-12">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">
+                {answers.length} {answers.length === 1 ? 'Answer' : 'Answers'}
+              </h2>
+
+              <StatusWrapper loading={answersLoading} error={answersError}>
+                <div className="space-y-6">
+                  {answers.map((answer) => (
+                    <div key={answer.id} className="bg-white rounded-xl shadow-md p-8 transition-shadow hover:shadow-lg">
+                      <div className="flex gap-8">
+                        {/* Vote buttons */}
+                        <div className="flex flex-col items-center gap-2">
+                          <button
+                            onClick={() => handleVoteAnswer(answer.id, 'up')}
+                            className={`p-2.5 rounded-lg transition-all duration-200 ${
+                              answer.userVote === 'up'
+                                ? 'bg-green-100 text-green-600'
+                                : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'
+                            }`}
+                          >
+                            <ChevronUpIcon size={28} />
+                          </button>
+                          <span className={`text-xl font-semibold transition-colors duration-200 ${
+                            answer.userVote === 'up' 
+                              ? 'text-green-600' 
+                              : answer.userVote === 'down' 
+                                ? 'text-red-600' 
+                                : 'text-gray-700'
+                          }`}>
+                            {answer.votes}
+                          </span>
+                          <button
+                            onClick={() => handleVoteAnswer(answer.id, 'down')}
+                            className={`p-2.5 rounded-lg transition-all duration-200 ${
+                              answer.userVote === 'down'
+                                ? 'bg-red-100 text-red-600'
+                                : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'
+                            }`}
+                          >
+                            <ChevronDownIcon size={28} />
+                          </button>
+                        </div>
+
+                        {/* Answer content */}
+                        <div className="flex-grow">
+                          <div className="flex justify-between items-start">
+                            <div className="prose prose-lg max-w-none mb-6" dangerouslySetInnerHTML={{ __html: answer.content }} />
+                            {isAdmin && (
+                              <button
+                                onClick={() => handleDeleteAnswer(answer.id)}
+                                className="p-2.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors duration-200 group ml-4"
+                                title="Delete answer"
+                              >
+                                <TrashIcon size={22} className="group-hover:scale-110 transition-transform duration-200" />
+                              </button>
+                            )}
+                          </div>
+                          
+                          <div className="flex items-center text-sm text-gray-600 border-t pt-4">
+                            <span className="font-medium">Answered by {answer.userName}</span>
+                            <span className="mx-2">•</span>
+                            <span>{new Date(answer.createdAt).toLocaleDateString()}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </StatusWrapper>
+            </div>
+
+            {/* Add Answer Section */}
+            <div className="bg-white rounded-xl shadow-md p-8">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Your Answer</h2>
+              
+              {isAuthenticated ? (
+                <>
+                  <Editor
+                    value={answerContent}
+                    onChange={setAnswerContent}
+                    placeholder="Write your answer here..."
+                    className="mb-6"
+                  />
+                  <Button
+                    onClick={handleSubmitAnswer}
+                    loading={isSubmitting}
+                    disabled={isSubmitting || !answerContent.trim()}
+                    className="w-full sm:w-auto"
+                  >
+                    Post Your Answer
+                  </Button>
+                </>
+              ) : (
+                <div className="text-center py-12 bg-gray-50 rounded-lg">
+                  <p className="text-gray-600 mb-6 text-lg">You need to be logged in to submit an answer.</p>
+                  <Button 
+                    onClick={() => window.location.href = '/login'}
+                    className="w-full sm:w-auto"
+                  >
+                    Log in to Answer
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </StatusWrapper>
     </div>
   );

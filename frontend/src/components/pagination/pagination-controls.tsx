@@ -20,10 +20,9 @@ export function PaginationControls({
     onPageChange(Math.max(1, Math.min(newPage, totalPages)));
   };
 
-  // Show first, last, current, and neighbors with ellipsis if needed
   const renderPageNumbers = () => {
     const pages = [];
-    const delta = 1; // how many neighbors to show
+    const delta = 1; 
     let lastPage = 0;
 
     for (let i = 1; i <= totalPages; i++) {

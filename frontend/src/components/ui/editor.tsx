@@ -1,5 +1,4 @@
 import dynamic from 'next/dynamic';
-import { ComponentProps } from 'react';
 import { twMerge } from 'tailwind-merge';
 
 interface EditorProps {
@@ -11,7 +10,6 @@ interface EditorProps {
   className?: string;
 }
 
-// Dynamically import CKEditor with SSR disabled
 const CKEditorComponent = dynamic(
   () => import('@ckeditor/ckeditor5-react').then((mod) => {
     const { CKEditor } = mod;

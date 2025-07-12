@@ -22,11 +22,11 @@ const Header: React.FC = () => {
         <span className="font-bold text-xl">Code Titans</span>
       </div>
       <nav className="flex items-center space-x-6">
-        {isAuthenticated ? (
-          <>
             <a href="/" className="hover:text-blue-400 transition flex items-center space-x-2">
               <HomeIcon className="h-6 w-6" />
             </a>
+        {isAuthenticated ? (
+          <>
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
                 <UserIcon className="h-6 w-6" />

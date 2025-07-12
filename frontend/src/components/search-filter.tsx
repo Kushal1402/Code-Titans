@@ -15,11 +15,9 @@ export default function SearchFilter() {
         selectedFilters,
         setSearchQuery,
         setSelectedFilters,
-        fetchQuestions,
         setCurrentPage
     } = useQuestionsStore();
 
-    // Handle click outside
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -33,15 +31,13 @@ export default function SearchFilter() {
         };
     }, []);
 
-    // Debounce search
     useEffect(() => {
         const timer = setTimeout(() => {
-            setCurrentPage(1); // Reset to first page on search
-            fetchQuestions();
+            setCurrentPage(1); 
         }, 300);
 
         return () => clearTimeout(timer);
-    }, [searchQuery, selectedFilters, fetchQuestions, setCurrentPage]);
+    }, [searchQuery, selectedFilters, setCurrentPage]);
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         setSearchQuery(e.target.value);

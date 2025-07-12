@@ -1,5 +1,5 @@
 import { api } from '@/lib/api';
-import { questions } from '@/lib/endPoints';
+import { questionEndpoint } from '@/lib/endPoints';
 import { create } from 'zustand';
 
 interface Tag {
@@ -45,7 +45,7 @@ interface QuestionsState {
   setError: (error: string | null) => void;
 
   // Fetch questions
-  fetchQuestions: () => Promise<void>;
+  fetchQuestions: (url: string) => Promise<void>;
   // Fetch single question
   fetchQuestion: (id: string) => Promise<Question | null>;
   // Create question
@@ -124,14 +124,14 @@ export const useQuestionsStore = create<QuestionsState>((set, get) => ({
   setError: (error) => set({ error }),
 
   // Fetch questions with current filters and pagination
-  fetchQuestions: async () => {
+  fetchQuestions: async (url: string) => {
     const { currentPage, itemsPerPage, searchQuery, selectedFilters } = get();
     
     set({ isLoading: true, error: null });
     
     try {
       // Commented out API call
-      // const response = await api.get([questions.PAGINATED, {page:currentPage,perPage:itemsPerPage,search:searchQuery,filters:selectedFilters.join(',')}]);
+      // const response = await api.get(questionEndpoint.PAGINATED);
       // if (!response.ok) {
       //   throw new Error('Failed to fetch questions');
       // }
@@ -222,7 +222,6 @@ export const useQuestionsStore = create<QuestionsState>((set, get) => ({
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Refresh questions list after creating new question
-      await get().fetchQuestions();
       set({ isLoading: false });
       return true;
     } catch (error) {
