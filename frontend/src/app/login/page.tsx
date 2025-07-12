@@ -19,12 +19,13 @@ export default function LoginPage() {
       setError("Username and password are required.");
       return;
     }
-    // Simulate login (replace with real auth logic)
+    // Mock login - using hardcoded credentials for testing
+    // In a real app, this would make an API call
     if (username === "admin" && password === "admin") {
       login(username);
       router.push("/");
     } else {
-      setError("Invalid credentials.");
+      setError("Invalid credentials. Try admin/admin");
     }
   };
 

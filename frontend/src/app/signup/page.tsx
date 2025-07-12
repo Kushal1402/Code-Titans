@@ -24,7 +24,8 @@ export default function SignupPage() {
       setError("Passwords do not match.");
       return;
     }
-    // Simulate signup (replace with real registration logic)
+    // Mock signup - automatically logs in the user
+    // In a real app, this would make an API call to create the account
     login(username);
     router.push("/");
   };

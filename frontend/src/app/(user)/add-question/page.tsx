@@ -5,8 +5,6 @@ import { useRouter } from 'next/navigation';
 import Button from '@/components/ui/button';
 import Editor from '@/components/ui/editor';
 import { useQuestionsStore } from '@/store/useQuestionsStore';
-import { api } from '@/lib/api';
-import { questions } from '@/lib/endPoints';
 
 export default function AddQuestion() {
   const router = useRouter();
@@ -14,7 +12,7 @@ export default function AddQuestion() {
   const [content, setContent] = useState('');
   const [tagsInput, setTagsInput] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { fetchQuestions } = useQuestionsStore();
+  const { createQuestion } = useQuestionsStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,18 +28,11 @@ export default function AddQuestion() {
           name: tag
         }));
 
-      const response = await api.post(questions.QUESTION, { 
-        title, 
-        content,
-        tags
-      });
+      const success = await createQuestion(title, content, tags);
 
-      if (!response.ok) {
-        throw new Error('Failed to create question');
+      if (success) {
+        router.push('/');
       }
-
-      await fetchQuestions();
-      router.push('/');
     } catch (error) {
       console.error('Error creating question:', error);
     } finally {
@@ -135,7 +126,7 @@ export default function AddQuestion() {
               <Button
                 type="button"
                 variant="secondary"
-                onClick={() => router.back()}
+                onClick={() => router.push('/')}
                 disabled={isSubmitting}
                 className="px-4 py-1.5 text-sm"
               >
