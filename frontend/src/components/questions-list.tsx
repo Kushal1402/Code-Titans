@@ -114,28 +114,28 @@ export default function QuestionsList() {
         onRetry={() => mutate(`${questionEndpoint.PAGINATED}?page=${currentPage}&limit=${itemsPerPage}`)}
         loading={isLoading} 
         error={error} 
-        className="flex-grow h-[80vh] overflow-y-auto bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-4"
+        className="flex-grow h-[80vh] overflow-y-auto bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-2 sm:p-4"
       >
-        <div className="p-3 h-full space-y-6">
+        <div className="p-2 sm:p-3 h-full space-y-4 sm:space-y-6">
           {questionsList.map((question) => (
             <Link
               href={`/question/${question.id}`}
               key={question.id}
-              className="group block border-2 border-indigo-100 rounded-xl p-6 transition-all duration-300 bg-white/80 backdrop-blur-sm hover:bg-white hover:border-indigo-200 transform "
+              className="group block border-2 border-indigo-100 rounded-xl p-3 sm:p-6 transition-all duration-300 bg-white/80 backdrop-blur-sm hover:bg-white hover:border-indigo-200 transform"
             >
-              <div className="flex gap-6">
-                <div className="flex flex-col items-center gap-2 bg-gradient-to-b from-indigo-50 to-purple-50 p-3 rounded-lg">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-6">
+                <div className="flex sm:flex-col items-center gap-2 bg-gradient-to-b from-indigo-50 to-purple-50 p-2 sm:p-3 rounded-lg">
                   <button
                     onClick={(e) => handleVote(e, question.id, 'up')}
-                    className={`p-2 rounded-full transition-all duration-200 ${
+                    className={`p-1.5 sm:p-2 rounded-full transition-all duration-200 ${
                       question.userVote === 'up' 
                         ? 'bg-green-100 text-green-600 hover:bg-green-200' 
                         : 'text-gray-400 hover:bg-indigo-100 hover:text-indigo-600'
                     }`}
                   >
-                    <ChevronUpIcon size={24} />
+                    <ChevronUpIcon size={20} className="sm:w-6 sm:h-6" />
                   </button>
-                  <span className={`text-lg font-bold ${
+                  <span className={`text-base sm:text-lg font-bold ${
                     question.votes > 0 ? 'text-green-600' : 
                     question.votes < 0 ? 'text-red-600' : 
                     'text-gray-600'
@@ -144,66 +144,66 @@ export default function QuestionsList() {
                   </span>
                   <button
                     onClick={(e) => handleVote(e, question.id, 'down')}
-                    className={`p-2 rounded-full transition-all duration-200 ${
+                    className={`p-1.5 sm:p-2 rounded-full transition-all duration-200 ${
                       question.userVote === 'down' 
                         ? 'bg-red-100 text-red-600 hover:bg-red-200' 
                         : 'text-gray-400 hover:bg-indigo-100 hover:text-indigo-600'
                     }`}
                   >
-                    <ChevronDownIcon size={24} />
+                    <ChevronDownIcon size={20} className="sm:w-6 sm:h-6" />
                   </button>
                 </div>
                         
                 <div className="flex-grow">
-                  <div className="flex justify-between items-start mb-4">
-                    <div className="flex-grow pr-4">
-                      <h3 className="text-xl font-bold text-indigo-900 mb-3 group-hover:text-indigo-600 transition-colors">
+                  <div className="flex flex-col sm:flex-row justify-between items-start mb-3 sm:mb-4">
+                    <div className="flex-grow pr-2 sm:pr-4 w-full sm:w-auto">
+                      <h3 className="text-lg sm:text-xl font-bold text-indigo-900 mb-2 sm:mb-3 group-hover:text-indigo-600 transition-colors line-clamp-2">
                         {question.title}
                       </h3>
-                      <p className="text-gray-600 mb-4 line-clamp-2 group-hover:text-gray-800 transition-colors">
+                      <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 line-clamp-2 group-hover:text-gray-800 transition-colors">
                         {question.description}
                       </p>
                     </div>
-                    <div className="flex items-center gap-4">
-                      <div className="text-sm font-medium text-purple-600 whitespace-nowrap bg-purple-50 px-3 py-1 rounded-full">
+                    <div className="flex items-center gap-2 sm:gap-4 w-full sm:w-auto justify-between sm:justify-start">
+                      <div className="text-xs sm:text-sm font-medium text-purple-600 whitespace-nowrap bg-purple-50 px-2 sm:px-3 py-1 rounded-full">
                         {new Date(question.createdAt).toLocaleDateString()}
                       </div>
                       {isAdmin && (
                         <button
                           onClick={(e) => handleDelete(e, question.id)}
-                          className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-all duration-200 hover:text-red-600 hover:scale-110"
+                          className="p-1.5 sm:p-2 text-red-500 hover:bg-red-50 rounded-full transition-all duration-200 hover:text-red-600 hover:scale-110"
                           title="Delete question"
                         >
-                          <Trash2Icon size={20} />
+                          <Trash2Icon size={18} className="sm:w-5 sm:h-5" />
                         </button>
                       )}
                     </div>
                   </div>
 
-                  <div className="flex items-center space-x-4 mb-4">
-                    <div className="flex items-center space-x-2">
-                      <span className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-400 to-purple-400 flex items-center justify-center text-sm font-bold text-white shadow-sm">
+                  <div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-3 sm:mb-4">
+                    <div className="flex items-center gap-2">
+                      <span className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-indigo-400 to-purple-400 flex items-center justify-center text-xs sm:text-sm font-bold text-white shadow-sm">
                         {question.userName.charAt(0).toUpperCase()}
                       </span>
-                      <span className="text-sm font-semibold text-indigo-700">
+                      <span className="text-xs sm:text-sm font-semibold text-indigo-700">
                         {question.userName}
                       </span>
                     </div>
-                    <div className="flex items-center space-x-2 bg-indigo-50 px-4 py-2 rounded-full">
-                      <span className="px-2 py-1 text-sm bg-indigo-100 text-indigo-700 rounded-full font-bold">
+                    <div className="flex items-center space-x-2 bg-indigo-50 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full">
+                      <span className="px-2 py-0.5 sm:py-1 text-xs sm:text-sm bg-indigo-100 text-indigo-700 rounded-full font-bold">
                         {question.answersCount}
                       </span>
-                      <span className="text-sm font-medium text-indigo-600">
+                      <span className="text-xs sm:text-sm font-medium text-indigo-600">
                         {question.answersCount === 1 ? "answer" : "answers"}
                       </span>
                     </div>
                   </div>
 
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1.5 sm:gap-2">
                     {question.tags.map((tag) => (
                       <span
                         key={tag.id}
-                        className="px-4 py-1.5 text-sm bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-700 rounded-full font-medium hover:from-indigo-100 hover:to-purple-100 transition-all duration-200 shadow-sm"
+                        className="px-3 sm:px-4 py-1 sm:py-1.5 text-xs sm:text-sm bg-gradient-to-r from-indigo-50 to-purple-50 text-indigo-700 rounded-full font-medium hover:from-indigo-100 hover:to-purple-100 transition-all duration-200 shadow-sm"
                       >
                         {tag.name}
                       </span>
@@ -223,7 +223,7 @@ export default function QuestionsList() {
         currentPageEnd={currentPageEnd}
         onPageChange={handlePageChange}
         onPerPageChange={handlePerPageChange}
-        className="w-full mt-6"
+        className="w-full mt-4 sm:mt-6"
       />
     </div>
   );

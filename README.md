@@ -6,13 +6,17 @@ A minimalist space for code-titans team to sync, plan, and ship.
 
 *StackIt* is a minimalistic question-and-answer platform that promotes collaborative learning and structured knowledge sharing. Built with simplicity and usability in mind, StackIt provides a streamlined experience focused on community-driven Q&A.
 
+
+🌐 [View Project Live](https://code-titans.vercel.app/)
+
 ---
 
 ## 📦 Tech Stack
 - Frontend : Next js | Typescript
-- UI library : Tailwind CSS | Zustand
-- Backend : Python
-- Database : PostgreSQL
+- UI library : Tailwind CSS
+- State management: Zustand
+- Backend : Python | Django
+- Database : SQLite
 
 ---
 
@@ -77,7 +81,8 @@ The question and answer descriptions support the following formatting options:
 ## Folder Structure
 The project folder structure is organized as follows:
 
-- frontend/: Contains the frontend form application built with Next.js
+- `frontend/`: Contains the lightining fast, user friendly web-application built with Next.js
+- `backend/`: Contains the backend api built with Pyton and lightweight Sqlite database engine
 
 ## 🚀 Frontend Setup
 
